@@ -1,39 +1,111 @@
-# Task Manager RESTFul-API
+Kanban Task Manager RESTful API
+The Kanban Task Manager API is built using the NESTJS Framework, Node.js, and PostgreSQL. It follows the principles of RESTful design architecture. This API provides functionality for managing boards, columns, tasks, and subtasks in a Kanban-style task management system.
 
-Kanban Task manager API built using **NESTJS** Framework ,  **NODE JS** and **MongoDB**. It follows a **RESTFul** design architecture. The app sends an email notification upon registration and deactivation of the user's account. It's richly built with a simple scientific technique and best practices in the world of **API** design.
+Features
+Authentication and Security
+API Endpoints
+Authentication
+User Login
 
-## Features
+Method: POST
+Endpoint: /auth/login
+Access: Private
+Description: Allows a user to log in.
+User Registration
 
-- Authentication and Security
+Method: POST
+Endpoint: /auth/register
+Access: Private
+Description: Allows a user to register an account.
+User Logout
 
-## API Endpoints
+Method: POST
+Endpoint: /auth/logout
+Access: Private
+Description: Allows a user to log out.
+User Profile
+Get User Profile
+Method: GET
+Endpoint: /users/:userId
+Access: Private
+Description: Retrieves the user's profile, including their boards.
+Boards
+Get All Boards
 
-| Methods | Endpoints                          | Access  | Description                              |
-| ------- | ---------------------------------- | ------- | ---------------------------------------- |
-| POST     | /auth/login                         | Private | User Login  
-| POST     | /auth/register                         | Private | User Register  
-| POST     | /auth/logout                        | Private | User Logout Boards                         |
-| GET   | /user/[userId]                         | Private | Get All the board  |
- GET   | /user/[userId]/boards/[boardId]                          | Private | Get one board                           |
-| POST    | /user/[userId]                   | Private |  Create a Board                   |
-| DELETE    | /user/[userId]/boards/[boardId]             | Private | Delete  one board                      |
-| GET | /user/[userId]/boards/[boardsId]/columns/[columnId]                   | Private | get one column 
-| PUT | /user/[userId]/boards/[boardsId]/columns/[columnId]/tasks/[taskId]                   | Private | update one task 
-| POST | /user/[userId]/boards/[boardsId]/columns/[columnId]                  | Private | create one task
-| DELETE  | /user/[userId]/boards/[boardsId]/columns/[columnId]/tasks/[taskId]                          | Private | Delete one task                            
+Method: GET
+Endpoint: /users/:userId/boards
+Access: Private
+Description: Retrieves all boards belonging to the user.
+Get One Board
 
-## Hosted Domain Link
+Method: GET
+Endpoint: /boards/:boardId
+Access: Private
+Description: Retrieves details of a specific board by its boardId.
+Create a Board
 
-[Kanban Task Manager API](https://kanbantask.onrender.com)
+Method: POST
+Endpoint: /users/:userId/boards
+Access: Private
+Description: Creates a new board for the user.
+Delete One Board
 
-## Postman Collection Link
+Method: DELETE
+Endpoint: /users/:userId/boards/:boardId
+Access: Private
+Description: Deletes a specific board.
+Columns
+Get One Column
 
-[Kanban Task Manager API Shared Collection]
+Method: GET
+Endpoint: /columns/:columnId
+Access: Private
+Description: Retrieves details of a specific column by its columnId.
+Update One Task
 
-## Contributing
+Method: PUT
+Endpoint: /columns/:columnId/tasks/:taskId
+Access: Private
+Description: Updates a specific task within a column.
+Create One Task
 
-You can fork the repository and send pull request or reach out easily to me via twitter => [lucas zebre](https://twitter.com/ZebreLucas)
+Method: POST
+Endpoint: /columns/:columnId/tasks
+Access: Private
+Description: Creates a new task within a column.
+Delete One Task
 
-## Security Vulnerabilities
+Method: DELETE
+Endpoint: /columns/:columnId/tasks/:taskId
+Access: Private
+Description: Deletes a specific task within a column.
+Subtasks
+Create One Subtask
 
-If you discover a security vulnerability within the project, please create an issue. All security vulnerabilities will be promptly addressed and appreciated.
+Method: POST
+Endpoint: /tasks/:taskId/subtask
+Access: Private
+Description: Creates a new subtask within a task.
+Delete One Subtask
+
+Method: DELETE
+Endpoint: /subtask/:subtaskId
+Access: Private
+Description: Deletes a specific subtask.
+Update One Subtask
+
+Method: PUT
+Endpoint: /subtask/:subtaskId
+Access: Private
+Description: Updates a specific subtask.
+Hosted Domain Link
+Link to Hosted Kanban Task Manager API
+
+Postman Collection Link
+[Link to Postman Collection for Kanban Task Manager API]
+
+Contributing
+You are welcome to contribute to the project by forking the repository and sending pull requests. If you have any questions or suggestions, feel free to reach out on Twitter.
+
+Security Vulnerabilities
+If you discover any security vulnerabilities within the project, please create an issue to report it. Your assistance in identifying and addressing security issues is greatly appreciated.
