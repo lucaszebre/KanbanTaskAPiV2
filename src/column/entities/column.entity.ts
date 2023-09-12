@@ -10,18 +10,22 @@ import {
     ManyToOne,
     JoinColumn,
   } from 'typeorm';
-
+@Entity()
 export class Columns {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn("uuid")
     id: string;
   
     @Column()
     name: string;
   
+    
+  
+  
+
     @ManyToOne(() => Board, (board) => board.columns)
     @JoinColumn({ name: 'boardId' })
     board: Board;
-  
-    @OneToMany(() => Task, (task) => task)
-    tasks: Task[];
+
+  @OneToMany(() => Task, (task) => task.column)
+  tasks: Task[];
   }

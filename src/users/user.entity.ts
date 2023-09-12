@@ -11,14 +11,13 @@ export class User {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
     
     @Column()
     password: string;
 
 
-    @OneToMany(() => Board, (board) => board)
+    @OneToMany(() => Board, (board) => board.user)
     boards: Board[];
-    
 }

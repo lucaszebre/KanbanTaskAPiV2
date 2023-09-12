@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { Task } from 'src/tasks/entities/tasks.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Columns } from 'src/column/entities/column.entity';
+import { User } from 'src/users/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Board {
@@ -10,7 +11,15 @@ export class Board {
     @Column()
     name: string;
   
-    @OneToMany(() => Task, (task) => task)
-    columns: Task[];
+    @ManyToOne(() => User, (user) => user.boards)
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @OneToMany(() => Columns, (column) => column.board)
+  columns: Columns[];
     
 }
+
+
+
+

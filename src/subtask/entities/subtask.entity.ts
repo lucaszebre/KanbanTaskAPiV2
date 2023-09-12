@@ -4,7 +4,7 @@ import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne } from 't
 
 @Entity()
 export class Subtask {
-        @PrimaryGeneratedColumn('uuid')
+        @PrimaryGeneratedColumn("uuid")
         id: string;
       
         @Column({ nullable: true })
@@ -12,13 +12,7 @@ export class Subtask {
       
         @Column({ default: false })
         isCompleted: boolean;
-      
-        @Column()
-        columnId: string;
-      
-        @Column()
-        boardId: string;
-      
+
         @ManyToOne(() => Task, (task) => task.subtasks)
         @JoinColumn({ name: 'taskId' })
         task: Task;

@@ -5,7 +5,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOn
 
 @Entity()
 export class Task {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
@@ -18,10 +18,9 @@ export class Task {
   status: string;
 
   @ManyToOne(() => Columns, (column) => column.tasks)
-
   @JoinColumn({ name: 'columnId' })
   column: Columns;
 
-  @OneToMany(() => Subtask, (subtask) => subtask)
+  @OneToMany(() => Subtask, (subtask) => subtask.task)
   subtasks: Subtask[];
 }
