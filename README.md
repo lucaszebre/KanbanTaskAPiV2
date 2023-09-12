@@ -10,8 +10,11 @@ Kanban Task manager API built using **NESTJS** Framework ,  **NODE JS** and **Mo
 
 | Methods | Endpoints                          | Access  | Description                              |
 | ------- | ---------------------------------- | ------- | ---------------------------------------- |
-| GET     | /user/[userId]                         | Private | User's Boards                         |
-| GET   | /user/[userId]/boards/[boardId]                          | Private | Get one board                           |
+| POST     | /auth/login                         | Private | User Login  
+| POST     | /auth/register                         | Private | User Register  
+| POST     | /auth/logout                        | Private | User Logout Boards                         |
+| GET   | /user/[userId]                         | Private | Get All the board  |
+ GET   | /user/[userId]/boards/[boardId]                          | Private | Get one board                           |
 | POST    | /user/[userId]                   | Private |  Create a Board                   |
 | DELETE    | /user/[userId]/boards/[boardId]             | Private | Delete  one board                      |
 | GET | /user/[userId]/boards/[boardsId]/columns/[columnId]                   | Private | get one column 

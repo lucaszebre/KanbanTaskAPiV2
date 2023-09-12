@@ -4,23 +4,14 @@ import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException, Bad
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { BoardService } from 'src/boards/boards.service';
+import { Board } from 'src/boards/entities/boards.entity';
 @Controller('users')
     export class UsersController {
     constructor(
         private readonly usersService: UsersService,
-    
+        private readonly boardsService : BoardService
         ) {}
-
-    //get all users
-    @UseGuards(AuthGuard)
-    @Get()
-    //// Specify the required role(s) for this route
-    async findAll(): Promise<User[]> {
-    
-            return await this.usersService.findAll();
-        
-        
-    }
 
     //get user by id
     @UseGuards(AuthGuard)
@@ -34,17 +25,41 @@ import { AuthGuard } from 'src/auth/auth.guard';
         }
     }
 
-    //create user
-    // @Post()
-    // async create(@Body() user: User): Promise<User> {
-    //     try {
-    //         return this.usersService.create(user);
-    //     } catch (error) {
-    //         throw new BadRequestException('Some propertie is missing -_-', { cause: new Error(), description: 'Some error description' })
+    // Get all the boards of user connected 
+    @UseGuards(AuthGuard)
+    @Get(':id/boards/:boardId')
+    async findOneBoard(@Param('id') id: string,@Param('boardId') boardId:string): Promise<Board> {
+        const user = await this.boardsService.findOneBoardWithDetails(id,boardId);
+        if (!user) {
+        throw new NotFoundException('User does not exist!');
+        } else {
+        return user;
+        }
+    } 
+    
+    
+    @UseGuards(AuthGuard)
+    @Get(':id/boards')
+    async findAllBoards(@Param('id') id: string): Promise<User> {
+        const AllBoard = await this.usersService.findOneWithDetails(id);
+        if (!AllBoard) {
+        throw new NotFoundException('User does not exist!');
+        } else {
+        return AllBoard;
+        }
+    } 
+    @UseGuards(AuthGuard)
+    @Post(':id/boards')
+    async createBoard(@Body() board:Board) : Promise<Board> {
+        const Newboard = await this.boardsService.create(board);
+        if (!Newboard) {
+        throw new NotFoundException('User does not exist!');
+        } else {
+        return Newboard;
+        }
+    }
 
-    //     }
-        
-    // }
+  
 
     //update user
     @UseGuards(AuthGuard)
@@ -64,28 +79,5 @@ import { AuthGuard } from 'src/auth/auth.guard';
         }
         return this.usersService.delete(id);
     }
-    // // Get all the comment of a user 
-    // @UseGuards(AuthGuard)
-    // @Get(':userId/comments')
-    // async getUserComments(@Param('userId') userId: string) {
-    //     return this.commentService.findAllCommentUser(parseInt(userId))
-    // }
-    // // Get all the order of a user
-    // @UseGuards(AuthGuard) 
-    // @Get(':userId/orders')
-    // async getUserSubtask(@Param('userId') userId: string) {
-    //     return this.orderService.findSubtaskUsers(parseInt(userId))
-    // }
-    // // Get all the Report of a user
-    // @UseGuards(AuthGuard)
-    // @Get(':userId/reports')
-    // async getUserReports(@Param('userId') userId: string) {
-    //     return this.reportService.findAllReportUser(parseInt(userId))
-    // }
-    // // Get all the reservation of a user 
-    // @UseGuards(AuthGuard)
-    // @Get(':userId/reservations')
-    // async getUserReservation(@Param('userId') userId: string) {
-    //     return this.reservationService.findAllReservationUser(parseInt(userId))
-    // }
+
     }

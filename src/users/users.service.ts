@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,9 +10,20 @@ export class UsersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async findOneWithDetails(userId: string): Promise<User | undefined> {
+    // Use TypeORM query builder to fetch a user along with their boards, columns, tasks, and subtasks
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.boards', 'boards')
+      .leftJoinAndSelect('boards.columns', 'columns')
+      .leftJoinAndSelect('columns.tasks', 'tasks')
+      .leftJoinAndSelect('tasks.subtasks', 'subtasks')
+      .where('user.userId = :userId', { userId })
+      .getOne();
+
+    return user;
   }
+
 
   async findOne(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { email } });

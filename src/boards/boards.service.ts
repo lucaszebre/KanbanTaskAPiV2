@@ -9,6 +9,21 @@ export class BoardService {
     @InjectRepository(Board)
     private boardRepository: Repository<Board>,
   ) {}
+
+  async findOneBoardWithDetails(userId: string, boardId: string): Promise<Board | undefined> {
+    // Use TypeORM query builder to fetch the board and its related columns, tasks, and subtasks
+    const board = await this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.columns', 'columns')
+      .leftJoinAndSelect('columns.tasks', 'tasks')
+      .leftJoinAndSelect('tasks.subtasks', 'subtasks')
+      .where('board.id = :boardId', { boardId })
+      .andWhere('board.userId = :userId', { userId })
+      .getOne();
+
+    return board;
+  }
+  
   async create(Board: Partial<Board>): Promise<Board> {
     const newuser = this.boardRepository.create(Board);
     return this.boardRepository.save(newuser);
