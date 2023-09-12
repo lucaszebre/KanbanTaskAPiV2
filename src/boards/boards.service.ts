@@ -29,7 +29,7 @@ export class BoardService {
     return this.boardRepository.findOne({ where: { id } });
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.boardRepository.delete(id);
   }
 }

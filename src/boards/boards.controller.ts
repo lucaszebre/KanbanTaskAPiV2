@@ -30,7 +30,7 @@ export class BoardsController {
   }
   @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  remove(@Param('id') id: string) {
     return this.boardsService.delete(id);
   }
 }

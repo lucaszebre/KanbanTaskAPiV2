@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -9,12 +10,10 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { TasksModule } from './tasks/tasks.module';
-import { CommentsModule } from './comments/comments.module';
-import { ReservationsModule } from './reservations/reservations.module';
-import { ReportsModule } from './reports/reports.module';
-import { SubtaskModule } from './orders/orders.module';
+import { BoardsModule } from './boards/boards.module';
+import { SubtaskModule } from './subtask/subtask.module';
 import { UserExistsMiddleware } from './auth/middleware/alreadyRegister';
-import { RolesGuard } from './users/users.guard';
+import { ColumnModule } from './column/column.module';
 
 @Module({
   imports: [
@@ -33,18 +32,14 @@ import { RolesGuard } from './users/users.guard';
     }),
     AuthModule,
     TasksModule,
-    CommentsModule,
-    ReservationsModule,
-    ReportsModule,
+    BoardsModule,
     SubtaskModule,
+    ColumnModule,
   ],
   controllers: [AppController, ],
   providers: [AppService,{
     provide: APP_GUARD,
     useClass: AuthGuard,
-  },{
-    provide: APP_GUARD,
-    useClass: RolesGuard,
   } ],
 })
 
