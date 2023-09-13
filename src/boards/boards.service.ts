@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -63,7 +64,10 @@ export class BoardService {
 
 
   async findOne(id: string): Promise<Board> {
-    return this.boardRepository.findOne({ where: { id } });
+    return this.boardRepository.findOne({
+      where: { id },
+      relations: ['columns', 'columns.tasks', 'columns.tasks.subtasks'],
+    });
   }
 
 
