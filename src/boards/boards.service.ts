@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 import { Board } from './entities/boards.entity'
 import { User } from 'src/users/user.entity';
 import { Columns } from 'src/column/entities/column.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class BoardService {
   
   constructor(
-    private boardRepository: Repository<Board>,
-    private  userRepository : Repository<User> ,
+    @InjectRepository(Board)
+    private readonly boardRepository: Repository<Board>,
+    @InjectRepository(User)
+    private   userRepository : Repository<User> ,
+    @InjectRepository(Columns)
     private  columnRepository : Repository<Columns>
   ) {}
 
@@ -27,31 +31,33 @@ export class BoardService {
     return board;
   }
   
-  async createBoard(userId: string, newBoard: Board, initialColumns: Columns[]): Promise<Board> {
+  async createBoard(userId: string, nameBoard: string, initialColumns: string[]): Promise<void> {
     // Find the user
-    const user = await this.userRepository.findOne({ where: { id:userId } });
+    const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
   
+    const newBoard = new Board();
+  
     // Set the user reference for the new board
     newBoard.user = user;
   
+    newBoard.name = nameBoard;
     // Save the new board
     const savedBoard = await this.boardRepository.save(newBoard);
   
-    // Create and associate initial columns
-    for (const initialColumn of initialColumns) {
+    // Create and associate initial columns using column names
+    for (const initial of initialColumns) {
+      const initialColumn = new Columns(); // Create a new instance of Columns
+      initialColumn.name = initial;
       initialColumn.board = savedBoard;
       await this.columnRepository.save(initialColumn);
     }
   
-    // Update the user's boards
-    user.boards.push(savedBoard);
-    await this.userRepository.save(user);
-  
-    return savedBoard;
+   
   }
+  
   
 
 

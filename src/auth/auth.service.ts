@@ -12,12 +12,12 @@ export class AuthService {
     private jwtService: JwtService
     ) {}
 
-  async signIn(username: string, pass: string): Promise<any> {
-    const user = await this.UsersService.findOne(username);
+  async signIn(email: string, password: string): Promise<any> {
+    const user = await this.UsersService.findOne(email);
     if (!user) {
       throw new NotAcceptableException('could not find the user');
     }
-    const passwordValid = await bcrypt.compare(pass, user.password);
+    const passwordValid = await bcrypt.compare(password, user.password);
    
   if (user && passwordValid) {
     const payload = { id: user.id, email: user.email  };

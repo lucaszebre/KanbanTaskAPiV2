@@ -4,6 +4,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } fro
 import { BoardService } from './boards.service';
 import { Board } from './entities/boards.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { BoardCreateDto } from './dto/board-create.dto';
 
 @Controller('boards')
 export class BoardsController {
@@ -12,8 +13,8 @@ export class BoardsController {
   // Create a new Board
   @UseGuards(AuthGuard)
   @Post()
-  create(@Param('id') id: string ,@Body() Board:Board): Promise<Board>  {
-    return this.boardsService.createBoard(id,Board,Board.columns);
+  create(@Param('id') id: string, @Body() createDto: BoardCreateDto): Promise<void> {
+    return this.boardsService.createBoard(id, createDto.name, createDto.columns);
   }
 
 

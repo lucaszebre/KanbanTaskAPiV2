@@ -7,6 +7,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { BoardService } from 'src/boards/boards.service';
 import { Board } from 'src/boards/entities/boards.entity';
 import { Columns } from 'src/column/entities/column.entity';
+import { BoardCreateDto } from 'src/boards/dto/board-create.dto';
 @Controller('users')
     export class UsersController {
     constructor(
@@ -46,13 +47,9 @@ import { Columns } from 'src/column/entities/column.entity';
     // Create a boards 
     @UseGuards(AuthGuard)
     @Post(':id/boards')
-    async createBoard(@Param('id') id:string,@Body() board:Board , columns:Columns[]) : Promise<Board> {
-        const Newboard = await this.boardsService.createBoard(id,board,columns);
-        if (!Newboard) {
-        throw new NotFoundException('User does not exist!');
-        } else {
-        return Newboard;
-        }
+    async createBoard(@Param('id') id:string,@Body() BoardCreateDto) : Promise<void> {
+        return await this.boardsService.createBoard(id,BoardCreateDto.name,BoardCreateDto.columns);
+    
     }
 
   
