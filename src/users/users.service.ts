@@ -21,6 +21,13 @@ export class UsersService {
   }
 
 
+  async findOne(email: string): Promise<User> {
+    return this.userRepository.findOne({ where: { email }, relations:{boards:true} });
+  }
+  async findByID(id: string): Promise<User> {
+    return this.userRepository.findOne({ where: { id }, relations:{boards:true} });
+  }
+
   async create(user: Partial<User>): Promise<User> {
     const newuser = this.userRepository.create(user);
     return this.userRepository.save(newuser);
