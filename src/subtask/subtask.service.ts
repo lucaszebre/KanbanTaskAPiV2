@@ -1,13 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Subtask } from './entities/subtask.entity';
 
 @Injectable()
 export class SubtaskService {
   constructor(
-    @InjectRepository(Subtask)
     private subtaskRepository: Repository<Subtask>,
   ) {}
 

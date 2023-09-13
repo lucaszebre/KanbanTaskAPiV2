@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from './entities/boards.entity'
 import { User } from 'src/users/user.entity';
@@ -9,12 +8,9 @@ import { Columns } from 'src/column/entities/column.entity';
 export class BoardService {
   
   constructor(
-    @InjectRepository(Board)
     private boardRepository: Repository<Board>,
-    @InjectRepository(User)
-    private readonly userRepository : Repository<User> ,
-    @InjectRepository(Columns)
-    private readonly columnRepository : Repository<Columns>
+    private  userRepository : Repository<User> ,
+    private  columnRepository : Repository<Columns>
   ) {}
 
   async findOneBoardWithDetails(userId: string, boardId: string): Promise<Board | undefined> {

@@ -1,19 +1,14 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from './entities/tasks.entity';
-import { Columns } from 'src/column/entities/column.entity';
 import { Subtask } from 'src/subtask/entities/subtask.entity';
+
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectRepository(Task)
     private taskRepository: Repository<Task>,
-    @InjectRepository(Columns)
-    private columnRepository: Repository<Columns>, 
-    @InjectRepository(Subtask)
     private subtaskRepository: Repository<Subtask> ) {}
 
 
