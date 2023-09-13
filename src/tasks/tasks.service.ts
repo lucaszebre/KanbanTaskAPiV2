@@ -1,58 +1,71 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Task } from './entities/tasks.entity';
 import { Subtask } from 'src/subtask/entities/subtask.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TasksService {
   constructor(
+    @InjectRepository(Task)
     private taskRepository: Repository<Task>,
+    @InjectRepository(Subtask)
     private subtaskRepository: Repository<Subtask> ) {}
 
 
     // function to update a task and this current subtask 
 
-    async updateTaskAndSubtask(id: string, updatedTask: Task, updatedSubtasks: Subtask[]): Promise<Task> {
-      // Find the task by its id along with its subtasks
-      const task = await this.taskRepository.findOne({where:{id}, relations: [ 'subtasks'] });
-    
+    async updateTaskAndSubtask(id: string, updatedTask: Task, updatedSubtasks: Subtask[]): Promise<void> {
+      // Find the task
+      const task = await this.taskRepository.findOne({ where: { id }, relations: ['subtasks'] });
+      
       if (!task) {
         throw new NotFoundException('Task not found');
       }
-    
+      
       // Update the task's properties
       Object.assign(task, updatedTask);
-    
-      // Update existing subtasks
-      task.subtasks.forEach((subtask) => {
-        const updatedSubtask = updatedSubtasks.find((us) => us.id === subtask.id);
-    
-        if (updatedSubtask) {
-          Object.assign(subtask, updatedSubtask);
-        }
+      
+      // Remove subtasks that no longer exist
+      const subtasksToRemove = task.subtasks.filter((subtask) => {
+        return !updatedSubtasks.some((us) => us.id === subtask.id);
       });
-    
-      // Create and associate new subtasks
-      updatedSubtasks
-        .filter((us) => !us.id) // Filter out subtasks with an ID (existing subtasks)
-        .forEach((newSubtask) => {
-          newSubtask.task = task;
-          task.subtasks.push(newSubtask);
-        });
-    
-      // Delete subtasks that were removed
-      const subtasksToRemove = task.subtasks.filter(
-        (subtask) => !updatedSubtasks.some((us) => us.id === subtask.id)
-      );
+      
+      // Ensure that all subtasks to remove have valid IDs
+      if (subtasksToRemove.some((subtask) => !subtask.id)) {
+        throw new BadRequestException('Some subtasks are missing IDs');
+      }
+      
+      // Remove subtasks
       await this.subtaskRepository.remove(subtasksToRemove);
-    
+      
+      // Update existing subtasks and create new ones
+      task.subtasks = await Promise.all(
+        updatedSubtasks.map(async (updatedSubtask) => {
+          // If the subtask already exists, update it
+          if (updatedSubtask.id) {
+            const existingSubtask = task.subtasks.find((subtask) => subtask.id === updatedSubtask.id);
+            if (existingSubtask) {
+              Object.assign(existingSubtask, updatedSubtask);
+              return existingSubtask;
+            }
+          }
+          
+          // If it's a new subtask, create and associate it
+          updatedSubtask.task = task;
+          return await this.subtaskRepository.save(updatedSubtask);
+        })
+      );
+      
       // Save the updated task
-      await this.taskRepository.save(task);
-    
-      return task;
+      const updatedTaskResult = await this.taskRepository.save(task);
+      
+      // return updatedTaskResult;
     }
+  
+  
 
   
 

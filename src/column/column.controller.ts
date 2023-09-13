@@ -41,7 +41,7 @@ remove(@Param('id') id: string) {
 
 // Add a Tasks into a columns
   @UseGuards(AuthGuard)
-  @Put(':id/tasks/:taskId')
+  @Post(':id/tasks/')
   AddTask(@Param('id') id: string, @Body() Task:Task[]): Promise<any>  {
     return this.columnService.createTaskInColumn(id, Task);
   }

@@ -4,12 +4,17 @@ import { Columns } from './entities/column.entity';
 import { Repository } from 'typeorm';
 import { Task } from 'src/tasks/entities/tasks.entity';
 import { Subtask } from 'src/subtask/entities/subtask.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ColumnService {
   constructor(
+    @InjectRepository(Columns)
     private readonly columnRepository: Repository<Columns>,
+
+    @InjectRepository(Task)
     private readonly taskRepository: Repository<Task> , 
+    @InjectRepository(Subtask)
     private readonly subtaskRepository: Repository<Subtask>
   ) {}
   async create(Columns: Partial<Columns>): Promise<Columns> {

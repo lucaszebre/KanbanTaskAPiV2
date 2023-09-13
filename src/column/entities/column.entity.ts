@@ -18,9 +18,6 @@ export class Columns {
     @Column()
     name: string;
   
-    
-  
-  
 
     @ManyToOne(() => Board, (board) => board.columns)
     @JoinColumn({ name: 'boardId' })
