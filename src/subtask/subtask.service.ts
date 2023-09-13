@@ -10,14 +10,12 @@ export class SubtaskService {
     @InjectRepository(Subtask)
     private subtaskRepository: Repository<Subtask>,
   ) {}
+
   async create(user: Partial<Subtask>): Promise<Subtask> {
     const newuser = this.subtaskRepository.create(user);
     return this.subtaskRepository.save(newuser);
   }
 
-  async findAll(): Promise<Subtask[]> {
-    return this.subtaskRepository.find();
-  }
 
 
   async findOne(id: string): Promise<Subtask> {

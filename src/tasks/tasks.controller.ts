@@ -23,7 +23,7 @@ export class TasksController {
   @UseGuards(AuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() task:Task): Promise<any> {
-    return this.tasksService.update(id, task);
+    return this.tasksService.updateTaskAndSubtask(id, task,task.subtasks);
   }
 
   // Delete a task and current subtask cascasdly

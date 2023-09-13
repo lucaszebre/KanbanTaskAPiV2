@@ -6,6 +6,7 @@ import { User } from './user.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { BoardService } from 'src/boards/boards.service';
 import { Board } from 'src/boards/entities/boards.entity';
+import { Columns } from 'src/column/entities/column.entity';
 @Controller('users')
     export class UsersController {
     constructor(
@@ -45,8 +46,8 @@ import { Board } from 'src/boards/entities/boards.entity';
     // Create a boards 
     @UseGuards(AuthGuard)
     @Post(':id/boards')
-    async createBoard(@Body() board:Board) : Promise<Board> {
-        const Newboard = await this.boardsService.create(board);
+    async createBoard(@Param('id') id:string,@Body() board:Board , columns:Columns[]) : Promise<Board> {
+        const Newboard = await this.boardsService.createBoard(id,board,columns);
         if (!Newboard) {
         throw new NotFoundException('User does not exist!');
         } else {
@@ -68,7 +69,7 @@ import { Board } from 'src/boards/entities/boards.entity';
     @Delete(':id')
     async delete(@Param('id') id: string): Promise<any> {
         //handle error if user does not exist
-        const user = await this.usersService.findByID(id);
+        const user = await this.usersService.findOneWithDetails(id);
         if (!user) {
         throw new NotFoundException('User does not exist!');
         }

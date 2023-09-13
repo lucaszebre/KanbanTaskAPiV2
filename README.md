@@ -129,19 +129,8 @@ The Kanban Task Manager API is a RESTful API built using **NESTJS**, **Node.js**
 
 ### Subtasks
 
-- **Create One Subtask**
-  - Method: `POST`
-  - Endpoint: `/tasks/:taskId/subtask`
-  - Access: Private
-  - Description: Creates a new subtask within a task.
 
-- **Delete One Subtask**
-  - Method: `DELETE`
-  - Endpoint: `/subtask/:subtaskId`
-  - Access: Private
-  - Description: Deletes a specific subtask.
-
-- **Update One Subtask**
+- **Toggle One subtask**
   - Method: `PUT`
   - Endpoint: `/subtask/:subtaskId`
   - Access: Private

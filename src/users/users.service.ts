@@ -12,25 +12,14 @@ export class UsersService {
   ) {}
   async findOneWithDetails(userId: string): Promise<User | undefined> {
     // Use TypeORM query builder to fetch a user along with their boards, columns, tasks, and subtasks
-    const user = await this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.boards', 'boards')
-      .leftJoinAndSelect('boards.columns', 'columns')
-      .leftJoinAndSelect('columns.tasks', 'tasks')
-      .leftJoinAndSelect('tasks.subtasks', 'subtasks')
-      .where('user.userId = :userId', { userId })
-      .getOne();
-
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['boards', 'boards.columns', 'boards.columns.tasks', 'boards.columns.tasks.subtasks'],
+    });
+  
     return user;
   }
 
-
-  async findOne(email: string): Promise<User> {
-    return this.userRepository.findOne({ where: { email }, relations:{boards:true} });
-  }
-  async findByID(id: string): Promise<User> {
-    return this.userRepository.findOne({ where: { id }, relations:{boards:true} });
-  }
 
   async create(user: Partial<User>): Promise<User> {
     const newuser = this.userRepository.create(user);
