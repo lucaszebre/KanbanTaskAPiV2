@@ -8,17 +8,10 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class TasksController {
   
   constructor(private readonly tasksService: TasksService) {}
-  @UseGuards(AuthGuard)
-  @Post()
-  create(@Body() task:Task): Promise<Task> {
-    return this.tasksService.create(task);
-  }
+  
 
-  @Get()
-  findAll() {
-    return this.tasksService.findAll();
-  }
 
+  // Get a task and current subtask 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(id);
@@ -26,12 +19,14 @@ export class TasksController {
 
   
 
-
+  // Update a task and current subtask
   @UseGuards(AuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() task:Task): Promise<any> {
     return this.tasksService.update(id, task);
   }
+
+  // Delete a task and current subtask cascasdly
   @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {

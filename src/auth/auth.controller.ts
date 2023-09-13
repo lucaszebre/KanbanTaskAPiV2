@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post,UseGuards,Get,Request, Res, Header } from '@nestjs/common';
+import { Body, Controller, Post,UseGuards,Request, Res, Header } from '@nestjs/common';
 import { UsersService } from '../users/users.service'
 import { AuthGuard } from './auth.guard';
 import { Response } from 'express';
@@ -48,11 +48,11 @@ export class AuthController {
       // ... handle failed login ...
     }
    
-    @UseGuards(AuthGuard)
-    @Get('profile')
-    getProfile(@Request() req) {
-        return req.user;
-    }
+    // @UseGuards(AuthGuard)
+    // @Get('profile')
+    // getProfile(@Request() req) {
+    //     return req.user;
+    // }
 
     @UseGuards(AuthGuard) // Protect the logout route with your authentication guard
     @Post('/logout')

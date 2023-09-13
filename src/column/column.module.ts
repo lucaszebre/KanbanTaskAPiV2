@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Columns } from './entities/column.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Columns])],
+  imports:[TypeOrmModule.forFeature([Columns]),ColumnModule],
   controllers: [ColumnController],
   providers: [ColumnService],
   exports:[ColumnService]

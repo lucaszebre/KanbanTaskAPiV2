@@ -4,19 +4,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from './entities/tasks.entity';
+import { Columns } from 'src/column/entities/column.entity';
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Task)
-    private taskRepository: Repository<Task>  ) {}
-  async create(user: Partial<Task>): Promise<Task> {
-    const newuser = this.taskRepository.create(user);
-    return this.taskRepository.save(newuser);
-  }
+    private taskRepository: Repository<Task>,
+     @InjectRepository(Columns)
+    private columnRepository: Repository<Columns>  ) {}
 
-  async findAll(): Promise<Task[]> {
-    return this.taskRepository.find();
-  }
+
+  
+
+  
 
  
   async findOne(id: string): Promise<Task> {

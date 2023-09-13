@@ -58,35 +58,74 @@ The Kanban Task Manager API is a RESTful API built using **NESTJS**, **Node.js**
 
 - **Delete One Board**
   - Method: `DELETE`
-  - Endpoint: `/users/:userId/boards/:boardId`
+  - Endpoint: `/boards/:boardId`
   - Access: Private
   - Description: Deletes a specific board.
+  
+  - **Update One Board**
+  - Method: `UPDATE`
+  - Endpoint: `/boards/:boardId`
+  - Access: Private
+  - Description: Update a specific board.
 
 ### Columns
+
+  - **Create The Columns of Board**
+  - Method: `POST`
+  - Endpoint: `/boards/:boardId/columns`
+  - Access: Private
+  - Description: Add different Columns to a Boards.
 
 - **Get One Column**
   - Method: `GET`
   - Endpoint: `/columns/:columnId`
   - Access: Private
   - Description: Retrieves details of a specific column by its `columnId`.
-
-- **Update One Task**
+  
+  - **Update One Column**
   - Method: `PUT`
-  - Endpoint: `/columns/:columnId/tasks/:taskId`
+  - Endpoint: `/columns/:columnId`
   - Access: Private
-  - Description: Updates a specific task within a column.
+  - Description: Update details of a specific column by its `columnId`. 
+  
+   - **Delete One Column**
+  - Method: `DELETE`
+  - Endpoint: `/columns/:columnId`
+  - Access: Private
+  - Description: Delete a specific column by its `columnId`.
+  
+
+
+
+
+
+
+  ### Tasks
 
 - **Create One Task**
   - Method: `POST`
   - Endpoint: `/columns/:columnId/tasks`
   - Access: Private
   - Description: Creates a new task within a column.
+  
+- **Update One Task**
+  - Method: `PUT`
+  - Endpoint: `/tasks/:taskId`
+  - Access: Private
+  - Description: Updates a specific task within a column.
+  
+  - **Get One Task**
+  - Method: `GET`
+  - Endpoint: `/tasks/:taskId`
+  - Access: Private
+  - Description: Get a specific task within a column.
 
 - **Delete One Task**
   - Method: `DELETE`
-  - Endpoint: `/columns/:columnId/tasks/:taskId`
+  - Endpoint: `/tasks/:taskId`
   - Access: Private
   - Description: Deletes a specific task within a column.
+
 
 ### Subtasks
 

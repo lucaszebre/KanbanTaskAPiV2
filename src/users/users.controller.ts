@@ -14,32 +14,23 @@ import { Board } from 'src/boards/entities/boards.entity';
         ) {}
 
     //get user by id
+
+
+    // // Get one of  the boards of user connected 
+    // @UseGuards(AuthGuard)
+    // @Get(':id/boards/:boardId')
+    // async findOneBoard(@Param('id') id: string,@Param('boardId') boardId:string): Promise<Board> {
+    //     const user = await this.boardsService.findOneBoardWithDetails(id,boardId);
+    //     if (!user) {
+    //     throw new NotFoundException('User does not exist!');
+    //     } else {
+    //     return user;
+    //     }
+    // } 
+    
+    // Get the user and Boards that he own 
     @UseGuards(AuthGuard)
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<User> {
-        const user = await this.usersService.findByID(id);
-        if (!user) {
-        throw new NotFoundException('User does not exist!');
-        } else {
-        return user;
-        }
-    }
-
-    // Get all the boards of user connected 
-    @UseGuards(AuthGuard)
-    @Get(':id/boards/:boardId')
-    async findOneBoard(@Param('id') id: string,@Param('boardId') boardId:string): Promise<Board> {
-        const user = await this.boardsService.findOneBoardWithDetails(id,boardId);
-        if (!user) {
-        throw new NotFoundException('User does not exist!');
-        } else {
-        return user;
-        }
-    } 
-    
-    
-    @UseGuards(AuthGuard)
-    @Get(':id/boards')
     async findAllBoards(@Param('id') id: string): Promise<User> {
         const AllBoard = await this.usersService.findOneWithDetails(id);
         if (!AllBoard) {
@@ -48,6 +39,10 @@ import { Board } from 'src/boards/entities/boards.entity';
         return AllBoard;
         }
     } 
+
+  
+
+    // Create a boards 
     @UseGuards(AuthGuard)
     @Post(':id/boards')
     async createBoard(@Body() board:Board) : Promise<Board> {

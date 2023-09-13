@@ -1,13 +1,20 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from './entities/boards.entity'
+import { User } from 'src/users/user.entity';
+import { Columns } from 'src/column/entities/column.entity';
 @Injectable()
 export class BoardService {
+  
   constructor(
     @InjectRepository(Board)
     private boardRepository: Repository<Board>,
+    @InjectRepository(User)
+    private readonly userRepository : Repository<User> ,
+    @InjectRepository(Columns)
+    private readonly columnRepository : Repository<Columns>
   ) {}
 
   async findOneBoardWithDetails(userId: string, boardId: string): Promise<Board | undefined> {
@@ -24,27 +31,61 @@ export class BoardService {
     return board;
   }
   
-  async create(Board: Partial<Board>): Promise<Board> {
-    const newuser = this.boardRepository.create(Board);
-    return this.boardRepository.save(newuser);
-  }
-
-  async findAll(): Promise<Board[]> {
-    return this.boardRepository.find();
+  async createBoard(userId: string, newBoard: Board, initialColumns: Columns[]): Promise<Board> {
+    // Find the user
+    const user = await this.userRepository.findOne({ where: { id:userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+  
+    // Set the user reference for the new board
+    newBoard.user = user;
+  
+    // Save the new board
+    const savedBoard = await this.boardRepository.save(newBoard);
+  
+    // Create and associate initial columns
+    for (const initialColumn of initialColumns) {
+      initialColumn.board = savedBoard;
+      await this.columnRepository.save(initialColumn);
+    }
+  
+    // Update the user's boards
+    user.boards.push(savedBoard);
+    await this.userRepository.save(user);
+  
+    return savedBoard;
   }
   
+
 
 
   async findOne(id: string): Promise<Board> {
     return this.boardRepository.findOne({ where: { id } });
   }
 
-  async update(id: string, Board: Partial<Board>): Promise<Board> {
-    await this.boardRepository.update(id, Board);
-    return this.boardRepository.findOne({ where: { id } });
+
+  async updateBoard(boardId: string, updatedBoard: Partial<Board>): Promise<Board | undefined> {
+    // Find and update the board
+    const board = await this.boardRepository.findOne({where:{id:boardId}});
+    if (!board) {
+      throw new NotFoundException('Board not found');
+    }
+
+    Object.assign(board, updatedBoard);
+    await this.boardRepository.save(board);
+
+    return board;
   }
 
-  async delete(id: string): Promise<void> {
-    await this.boardRepository.delete(id);
+  async deleteBoard(boardId: string): Promise<void> {
+    // Find the board
+    const board = await this.boardRepository.findOne({ where: { id:boardId } });
+    if (!board) {
+      throw new NotFoundException('Board not found');
+    }
+
+    // Delete the board
+    await this.boardRepository.delete(boardId);
   }
 }

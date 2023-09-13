@@ -26,10 +26,10 @@ export class UsersService {
 
 
   async findOne(email: string): Promise<User> {
-    return this.userRepository.findOne({ where: { email } });
+    return this.userRepository.findOne({ where: { email }, relations:{boards:true} });
   }
   async findByID(id: string): Promise<User> {
-    return this.userRepository.findOne({ where: { id } });
+    return this.userRepository.findOne({ where: { id }, relations:{boards:true} });
   }
 
   async create(user: Partial<User>): Promise<User> {
