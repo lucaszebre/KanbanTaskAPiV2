@@ -2,10 +2,12 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Subtask } from './entities/subtask.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class SubtaskService {
   constructor(
+    @InjectRepository(Subtask)
     private subtaskRepository: Repository<Subtask>,
   ) {}
 
