@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { Subtask } from './entities/subtask.entity';
 import { SubtaskService } from './subtask.service';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -13,7 +13,13 @@ export class SubtaskController {
   @UseGuards(AuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() Subtask:Subtask): Promise<any>  {
-    return this.subtaskService.update(id, Subtask);
+    try {
+      return this.subtaskService.update(id, Subtask);
+    } catch (error) {
+      throw new HttpException('Subtask not found', HttpStatus.NOT_FOUND);
+    }
+    
+
   }
   
 
