@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, NotAcceptableException } from '@nestjs/common';
 import { ColumnService } from './column.service';
 import { Columns } from './entities/column.entity';
 import { TasksService } from 'src/tasks/tasks.service';
@@ -24,7 +24,7 @@ export class ColumnController {
       return await this.columnService.findOne(id);
     } catch (error) {
       // Handle the error here and return an appropriate response
-      return { error: 'Column not found' };
+      throw new NotAcceptableException('Column not found');
     }
   }
 
@@ -36,7 +36,7 @@ export class ColumnController {
       return await this.columnService.update(id, column);
     } catch (error) {
       // Handle the error here and return an appropriate response
-      return { error: 'Failed to update column' };
+      throw new NotAcceptableException('Failed to update column');
     }
   }
 
@@ -48,7 +48,7 @@ export class ColumnController {
       return await this.columnService.delete(id);
     } catch (error) {
       // Handle the error here and return an appropriate response
-      return { error: 'Failed to delete column' };
+      throw new NotAcceptableException('Failed to delete column');
     }
   }
 
@@ -60,7 +60,7 @@ export class ColumnController {
       return await this.columnService.createTaskInColumn(id, tasks);
     } catch (error) {
       // Handle the error here and return an appropriate response
-      return { error: 'Failed to add tasks to the column' };
+      throw new NotAcceptableException('Failed to add tasks to the column');
     }
   }
   
