@@ -16,34 +16,52 @@ export class ColumnController {
 
   // Get one Column
 
+  // Find one Column
   @UseGuards(AuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.columnService.findOne(id);
-  } 
-  
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.columnService.findOne(id);
+    } catch (error) {
+      // Handle the error here and return an appropriate response
+      return { error: 'Column not found' };
+    }
+  }
+
   // Update one Column
   @UseGuards(AuthGuard)
   @Put(':id')
-  UpdateOne(@Param('id') id: string , @Body() Column:Columns): Promise<any>  {
-    return this.columnService.update(id,Column);
+  async updateOne(@Param('id') id: string, @Body() column: Columns) {
+    try {
+      return await this.columnService.update(id, column);
+    } catch (error) {
+      // Handle the error here and return an appropriate response
+      return { error: 'Failed to update column' };
+    }
   }
 
-// Delete one Column
+  // Delete one Column
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.columnService.delete(id);
+    } catch (error) {
+      // Handle the error here and return an appropriate response
+      return { error: 'Failed to delete column' };
+    }
+  }
 
-@UseGuards(AuthGuard)
-@Delete(':id')
-remove(@Param('id') id: string) {
-  return this.columnService.delete(id);
-}
-
-
-
-// Add a Tasks into a columns
+  // Add Tasks into a column
   @UseGuards(AuthGuard)
   @Post(':id/tasks/')
-  AddTask(@Param('id') id: string, @Body() Task:Task[]): Promise<any>  {
-    return this.columnService.createTaskInColumn(id, Task);
+  async addTask(@Param('id') id: string, @Body() tasks: Task[]) {
+    try {
+      return await this.columnService.createTaskInColumn(id, tasks);
+    } catch (error) {
+      // Handle the error here and return an appropriate response
+      return { error: 'Failed to add tasks to the column' };
+    }
   }
   
 
