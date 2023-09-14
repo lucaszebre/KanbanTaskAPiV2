@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { BoardService } from './boards.service';
 import { Board } from './entities/boards.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -14,7 +14,12 @@ export class BoardsController {
   @UseGuards(AuthGuard)
   @Post()
   create(@Param('id') id: string, @Body() createDto: BoardCreateDto): Promise<void> {
-    return this.boardsService.createBoard(id, createDto.name, createDto.columns);
+    try {
+      return this.boardsService.createBoard(id, createDto.name, createDto.columns);
+
+    } catch (error) {
+      throw new NotAcceptableException('Error to create a Board')
+    }
   }
 
 
@@ -29,21 +34,39 @@ export class BoardsController {
   @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.boardsService.findOne(id);
+    try {
+    const newBoard =   this.boardsService.findOne(id);
+      if(newBoard){
+        throw new NotFoundException('Board is not here')
+      }
+      return newBoard
+    } catch (error) {
+      throw new NotFoundException('Board is not here')
+    }
   }
 
   // Update a Board 
   @UseGuards(AuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() Board:Board): Promise<any>  {
-    return this.boardsService.updateBoard(id, Board);
+    try {
+      return this.boardsService.updateBoard(id, Board);
+    } catch (error) {
+      throw new NotAcceptableException('Error to update the board')
+    }
+    
   }
 
   // Delete one Board 
   @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.boardsService.deleteBoard(id);
+    try {
+      return this.boardsService.deleteBoard(id);
+    } catch (error) {
+      throw new NotFoundException('Error to delete the Board')
+    }
+   
   }
   
   

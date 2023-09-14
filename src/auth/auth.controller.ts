@@ -34,7 +34,7 @@ export class AuthController {
         email: result.email
     };
         } catch (error) {
-            throw BadRequestException
+            throw new BadRequestException('Error to register the user')
         }
     
     }
