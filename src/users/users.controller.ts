@@ -48,7 +48,11 @@ import { BoardCreateDto } from 'src/boards/dto/board-create.dto';
     @UseGuards(AuthGuard)
     @Post(':id/boards')
     async createBoard(@Param('id') id:string,@Body() BoardCreateDto) : Promise<void> {
-        return await this.boardsService.createBoard(id,BoardCreateDto.name,BoardCreateDto.columns);
+        try {
+            return await this.boardsService.createBoard(id,BoardCreateDto.name,BoardCreateDto.columns);
+        } catch (error) {
+            throw new BadRequestException('Error to add a boards')
+        }
     
     }
 
@@ -58,7 +62,12 @@ import { BoardCreateDto } from 'src/boards/dto/board-create.dto';
     @UseGuards(AuthGuard)
     @Put(':id')
     async update (@Param('id') id: string, @Body() user: User): Promise<any> {
-        return this.usersService.update(id, user);
+        try {
+            return this.usersService.update(id, user);
+
+        } catch (error) {
+            throw new BadRequestException('Error to update a boards')
+        }
     }
 
     //delete user
