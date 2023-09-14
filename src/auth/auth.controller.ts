@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post,UseGuards,Request, Res, Header, Get } from '@nestjs/common';
+import { Body, Controller, Post,UseGuards,Request, Res, Header, Get, BadRequestException } from '@nestjs/common';
 import { UsersService } from '../users/users.service'
 import { AuthGuard } from './auth.guard';
 import { Response } from 'express';
@@ -23,7 +23,8 @@ export class AuthController {
         @Body('email') email: string,
         @Body('name') name: string
     ) {
-    const saltOrRounds = 10;
+        try {
+            const saltOrRounds = 10;
     const password = await bcrypt.hash(userPassword, saltOrRounds);
     const result = await this.usersService.create(
         {email,password,name}
@@ -32,6 +33,10 @@ export class AuthController {
         msg: 'User successfully registered',
         email: result.email
     };
+        } catch (error) {
+            throw BadRequestException
+        }
+    
     }
 
     @Public()
@@ -43,6 +48,8 @@ export class AuthController {
         if (result && result.access_token) {
             res.header('Authorization', `Bearer ${result.access_token}`);
             return res.status(200).send(result);
+        }else{
+            throw res.status(400).send('Can not login')
         }
     
       // ... handle failed login ...
