@@ -17,7 +17,7 @@ export class TasksService {
 
     // function to update a task and this current subtask 
 
-    async updateTaskAndSubtask(id: string, updatedTask: Task, updatedSubtasks: Subtask[]): Promise<void> {
+    async updateTaskAndSubtask(id: string, updatedTask: Task, updatedSubtasks: Subtask[]): Promise<Task> {
       // Find the task
       const task = await this.taskRepository.findOne({ where: { id }, relations: ['subtasks'] });
       
@@ -63,6 +63,7 @@ export class TasksService {
       const updatedTaskResult = await this.taskRepository.save(task);
       
       // return updatedTaskResult;
+      return updatedTaskResult
     }
   
   
@@ -75,7 +76,7 @@ export class TasksService {
   }
 
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<Task> {
     const task = await this.taskRepository.findOne( {where:{id}, relations: ['subtasks'] });
   if (!task) {
     throw new NotFoundException('Task not found');
@@ -83,5 +84,7 @@ export class TasksService {
 
   // Delete the task and its associated subtasks
   await this.taskRepository.remove(task);
+
+  return task 
   }
 }
