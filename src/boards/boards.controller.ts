@@ -21,6 +21,17 @@ export class BoardsController {
       throw new NotAcceptableException('Error to create a Board')
     }
   }
+  
+  @UseGuards(AuthGuard)
+  @Post(':id/columns')
+  addColumn(@Param('id') id: string, @Body() name: {name:string}): Promise<void> {
+    try {
+      return this.boardsService.createColumnBoard(id, name.name);
+
+    } catch (error) {
+      throw new NotAcceptableException('Error to create a Board')
+    }
+  }
 
 
   // @UseGuards(AuthGuard)

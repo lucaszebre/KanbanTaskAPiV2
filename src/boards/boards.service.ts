@@ -115,4 +115,25 @@ export class BoardService {
     // Delete the board
     await this.boardRepository.remove(board);
   }
+
+  async createColumnBoard(boardId: string, name: string): Promise<void> {
+    // Find the user
+    const board = await this.boardRepository.findOne({ where: { id: boardId } });
+    if (!board) {
+      throw new NotFoundException('User not found');
+    }
+  
+    const newColumn = new Columns();
+  
+    // Set the user reference for the new board
+    newColumn.board = board;
+  
+    newColumn.name = name;
+    // Save the new board
+    const savedColumn = await this.columnRepository.save(newColumn);
+  
+    
+  
+   
+  }
 }

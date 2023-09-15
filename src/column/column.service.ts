@@ -65,11 +65,17 @@ export class ColumnService {
   }
 
   async delete(id: string): Promise<void> {
-    const task = await this.columnRepository.findOne( {where:{id}, relations: ['tasks','tasks.subtasks'] });
-    if (!task) {
+    const column = await this.columnRepository.findOne( {where:{id}, relations: ['tasks','tasks.subtasks'] });
+    if (!column) {
       throw new NotFoundException('Task not found');
     }
-  
+    for (const task of column.tasks) {
+      for (const subtask of task.subtasks) {
+        await this.subtaskRepository.remove(subtask);
+      }
+      await this.taskRepository.remove(task);
+    }
+
     // Delete the task and its associated subtasks
     await this.columnRepository.delete(id);
   }
