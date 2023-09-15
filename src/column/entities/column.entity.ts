@@ -19,10 +19,10 @@ export class Columns {
     name: string;
   
 
-    @ManyToOne(() => Board, (board) => board.columns)
+    @ManyToOne(() => Board, (board) => board.columns,)
     @JoinColumn({ name: 'boardId' })
     board: Board;
 
-  @OneToMany(() => Task, (task) => task.column)
+  @OneToMany(() => Task, (task) => task.column,{ cascade: true })
   tasks: Task[];
   }

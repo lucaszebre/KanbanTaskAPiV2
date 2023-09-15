@@ -55,9 +55,9 @@ export class ColumnController {
   // Add Tasks into a column
   @UseGuards(AuthGuard)
   @Post(':id/tasks/')
-  async addTask(@Param('id') id: string, @Body() tasks: Task[]) {
+  async addTask(@Param('id') id: string, @Body() task: Task) {
     try {
-      return await this.columnService.createTaskInColumn(id, tasks);
+      return await this.columnService.createTaskInColumn(id, task);
     } catch (error) {
       // Handle the error here and return an appropriate response
       throw new NotAcceptableException('Failed to add tasks to the column');

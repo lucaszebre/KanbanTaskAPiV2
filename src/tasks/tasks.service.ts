@@ -17,54 +17,61 @@ export class TasksService {
 
     // function to update a task and this current subtask 
 
-    async updateTaskAndSubtask(id: string, updatedTask: Task, updatedSubtasks: Subtask[]): Promise<Task> {
+    async updateTaskAndSubtask(
+      id: string,
+      updatedTask: Task,
+      SubtasksAdd: string[],
+      SubtasksChangeName: Subtask[],
+      SubtaskstoDelete: string[],
+    ): Promise<Task> {
       // Find the task
       const task = await this.taskRepository.findOne({ where: { id }, relations: ['subtasks'] });
-      
+    
       if (!task) {
         throw new NotFoundException('Task not found');
       }
-      
+    
       // Update the task's properties
       Object.assign(task, updatedTask);
-      
-      // Remove subtasks that no longer exist
-      const subtasksToRemove = task.subtasks.filter((subtask) => {
-        return !updatedSubtasks.some((us) => us.id === subtask.id);
-      });
-      
-      // Ensure that all subtasks to remove have valid IDs
-      if (subtasksToRemove.some((subtask) => !subtask.id)) {
-        throw new BadRequestException('Some subtasks are missing IDs');
+    
+      // Remove subtasks marked for deletion
+      if (SubtaskstoDelete.length > 0) {
+        task.subtasks = task.subtasks.filter((subtask) => !SubtaskstoDelete.includes(subtask.id));
+        await this.subtaskRepository.delete(SubtaskstoDelete);
       }
-      
-      // Remove subtasks
-      await this.subtaskRepository.remove(subtasksToRemove);
-      
+    
       // Update existing subtasks and create new ones
-      task.subtasks = await Promise.all(
-        updatedSubtasks.map(async (updatedSubtask) => {
-          // If the subtask already exists, update it
-          if (updatedSubtask.id) {
-            const existingSubtask = task.subtasks.find((subtask) => subtask.id === updatedSubtask.id);
-            if (existingSubtask) {
-              Object.assign(existingSubtask, updatedSubtask);
-              return existingSubtask;
-            }
-          }
-          
-          // If it's a new subtask, create and associate it
-          updatedSubtask.task = task;
-          return await this.subtaskRepository.save(updatedSubtask);
-        })
-      );
-      
+      for (const updatedSubtask of SubtasksChangeName) {
+        const existingSubtask = task.subtasks.find((subtask) => subtask.id === updatedSubtask.id);
+    
+        if (existingSubtask) {
+          // If the subtask already exists, update its name
+          existingSubtask.title = updatedSubtask.title;
+          await this.subtaskRepository.save(existingSubtask);
+        }
+      }
+    
+      for (const subtaskTitle of SubtasksAdd) {
+        // Create a new subtask and associate it
+        const newSubtask = new Subtask();
+        newSubtask.task = task;
+        newSubtask.title = subtaskTitle;
+        task.subtasks.push(newSubtask); // Add the new subtask to the task's subtasks array
+        await this.subtaskRepository.save(newSubtask);
+      }
+    
       // Save the updated task
       const updatedTaskResult = await this.taskRepository.save(task);
-      
-      // return updatedTaskResult;
-      return updatedTaskResult
+    
+      return updatedTaskResult;
     }
+    
+    
+    
+    
+    
+    
+    
   
   
 
@@ -77,14 +84,20 @@ export class TasksService {
 
 
   async delete(id: string): Promise<Task> {
-    const task = await this.taskRepository.findOne( {where:{id}, relations: ['subtasks'] });
-  if (!task) {
-    throw new NotFoundException('Task not found');
-  }
-
-  // Delete the task and its associated subtasks
-  await this.taskRepository.remove(task);
-
-  return task 
+    const task = await this.taskRepository.findOne({ where: { id }, relations: ['subtasks'] });
+    
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+  
+    // Delete the associated subtasks first
+    if (task.subtasks && task.subtasks.length > 0) {
+      await this.subtaskRepository.remove(task.subtasks);
+    }
+  
+    // Delete the task itself
+    await this.taskRepository.remove(task);
+  
+    return task;
   }
 }

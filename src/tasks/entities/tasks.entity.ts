@@ -17,10 +17,10 @@ export class Task {
   @Column({ default: 'Todo' })
   status: string;
 
-  @ManyToOne(() => Columns, (column) => column.tasks)
+  @ManyToOne(() => Columns, (column) => column.tasks,)
   @JoinColumn({ name: 'columnId' })
   column: Columns;
 
-  @OneToMany(() => Subtask, (subtask) => subtask.task)
+  @OneToMany(() => Subtask, (subtask) => subtask.task,{ cascade: true })
   subtasks: Subtask[];
 }

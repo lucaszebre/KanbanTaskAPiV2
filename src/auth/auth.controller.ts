@@ -25,7 +25,7 @@ export class AuthController {
     ) {
         try {
             const saltOrRounds = 10;
-    const password = await bcrypt.hash(userPassword, saltOrRounds);
+            const password = await bcrypt.hash(userPassword, saltOrRounds);
     const result = await this.usersService.create(
         {email,password,name}
     );

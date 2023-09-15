@@ -11,11 +11,11 @@ export class Board {
     @Column()
     name: string;
   
-  @ManyToOne(() => User, (user) => user.boards)
+  @ManyToOne(() => User, (user) => user.boards,)
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @OneToMany(() => Columns, (column) => column.board)
+  @OneToMany(() => Columns, (column) => column.board,{ cascade: true })
   columns: Columns[];
     
 }

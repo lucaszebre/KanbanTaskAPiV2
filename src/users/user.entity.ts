@@ -18,6 +18,6 @@ export class User {
     password: string;
 
 
-    @OneToMany(() => Board, (board) => board.user)
+    @OneToMany(() => Board, (board) => board.user,{ cascade: true })
     boards: Board[];
 }

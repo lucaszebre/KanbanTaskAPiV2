@@ -8,9 +8,11 @@ import { ColumnModule } from 'src/column/column.module';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { Columns } from 'src/column/entities/column.entity';
+import { Subtask } from 'src/subtask/entities/subtask.entity';
+import { Task } from 'src/tasks/entities/tasks.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Board,User,Columns]),ColumnModule,],
+  imports:[TypeOrmModule.forFeature([Board,User,Columns,Task,Subtask]),ColumnModule,],
   controllers: [BoardsController],
   providers: [BoardService,Repository],
   exports:[BoardService,TypeOrmModule]

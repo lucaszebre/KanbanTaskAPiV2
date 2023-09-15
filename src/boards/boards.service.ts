@@ -6,8 +6,11 @@ import { Board } from './entities/boards.entity'
 import { User } from 'src/users/user.entity';
 import { Columns } from 'src/column/entities/column.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from 'src/tasks/entities/tasks.entity';
+import { Subtask } from 'src/subtask/entities/subtask.entity';
 @Injectable()
 export class BoardService {
+  
   
   constructor(
     @InjectRepository(Board)
@@ -15,7 +18,11 @@ export class BoardService {
     @InjectRepository(User)
     private   userRepository : Repository<User> ,
     @InjectRepository(Columns)
-    private  columnRepository : Repository<Columns>
+    private  columnRepository : Repository<Columns>,
+    @InjectRepository(Task)
+    private taskRepository : Repository<Task>,
+    @InjectRepository(Subtask)
+    private subtaskRepository : Repository<Subtask>
   ) {}
 
   async findOneBoardWithDetails(userId: string, boardId: string): Promise<Board | undefined> {
@@ -86,12 +93,26 @@ export class BoardService {
 
   async deleteBoard(boardId: string): Promise<void> {
     // Find the board
-    const board = await this.boardRepository.findOne({ where: { id:boardId } });
+    const board = await this.boardRepository.findOne({ where: { id: boardId }, relations: ['columns', 'columns.tasks', 'columns.tasks.subtasks'] });
+    
     if (!board) {
       throw new NotFoundException('Board not found');
     }
-
+  
+    // Delete subtasks associated with tasks
+    for (const column of board.columns) {
+      for (const task of column.tasks) {
+        for (const subtask of task.subtasks) {
+          await this.subtaskRepository.remove(subtask);
+        }
+        await this.taskRepository.remove(task);
+      }
+    }
+  
+    // Delete columns
+    await this.columnRepository.remove(board.columns);
+  
     // Delete the board
-    await this.boardRepository.delete(boardId);
+    await this.boardRepository.remove(board);
   }
 }

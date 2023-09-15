@@ -29,35 +29,29 @@ export class ColumnService {
 
 
 
-  async createTaskInColumn(id: string, newTasks: Task[]): Promise<void[]> {
+  async createTaskInColumn(id: string, newTask: Task): Promise<void> {
     // Find the column
     const column = await this.columnRepository.findOne({ where: { id } });
     if (!column) {
       throw new NotFoundException('Column not found');
     }
   
-    // Create and associate tasks with subtasks
-    const savedTasks = await Promise.all(
-      newTasks.map(async (newTask) => {
-        // Set the column reference for the new task
-        newTask.column = column;
+    // Set the column reference for the new task
+    newTask.column = column;
   
-        // If newTask has subtasks, create and associate them
-        if (newTask.subtasks) {
-          newTask.subtasks = await Promise.all(
-            newTask.subtasks.map(async (subtask) => {
-              subtask.task = newTask; // Set the task reference for the subtask
-              return await this.subtaskRepository.save(subtask);
-            })
-          );
-        }
+    // Create and associate the task
+    const savedTask = await this.taskRepository.save(newTask);
   
-        await this.taskRepository.save(newTask);
-      })
-    );
+    if (newTask.subtasks) {
+      for (const subtask of newTask.subtasks) {
+        subtask.task = savedTask; // Set the task reference for the subtask
+        await this.subtaskRepository.save(subtask);
+      }
+    }
   
-    return savedTasks;
+    
   }
+  
 
  
 

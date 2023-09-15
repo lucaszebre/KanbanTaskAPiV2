@@ -36,7 +36,7 @@ export class BoardsController {
   findOne(@Param('id') id: string) {
     try {
     const newBoard =   this.boardsService.findOne(id);
-      if(newBoard){
+      if(!newBoard){
         throw new NotFoundException('Board is not here')
       }
       return newBoard
@@ -61,11 +61,9 @@ export class BoardsController {
   @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    try {
+    
       return this.boardsService.deleteBoard(id);
-    } catch (error) {
-      throw new NotFoundException('Error to delete the Board')
-    }
+    
    
   }
   
