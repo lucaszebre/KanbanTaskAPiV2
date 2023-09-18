@@ -66,11 +66,11 @@ export class ColumnController {
   }
   // Add Tasks into a column
   @UseGuards(AuthGuard)
-  @Post(':id/changetasks/')
-  async ChangeTaskColumn(@Param('id') id: string, @Body() task: Task,tasktoDelete:string) {
+  @Put(':id/changetasks/')
+  async ChangeTaskColumn(@Param('id') id: string, @Body() task: Task) {
     try {
-      await this.taskService.delete(tasktoDelete)
-      return await this.columnService.createTaskInColumn(id, task);
+      return await this.columnService.SwitchTaskColumn(id, task,task.id);
+      
     } catch (error) {
       // Handle the error here and return an appropriate response
       throw new NotAcceptableException('Failed to switch tasks of column');
